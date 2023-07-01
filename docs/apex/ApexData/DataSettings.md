@@ -7,6 +7,9 @@ Data Settings singleton for managing security and other data interaction setting
 through the application
 
 
+**Group** ApexData
+
+
 **Author** Tom Wilkins
 
 ## Methods

@@ -2,6 +2,7 @@
  * @description Data Settings singleton for managing security and other data interaction settings
  * through the application
  *
+ * @group ApexData
  * @author Tom Wilkins
  */
 public inherited sharing virtual class DataSettings {

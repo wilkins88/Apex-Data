@@ -6,6 +6,9 @@ layout: default
 Exception container class for organizing exceptions specific to this data library
 
 
+**Group** ApexData
+
+
 **Author** Tom Wilkins
 
 ## Classes
