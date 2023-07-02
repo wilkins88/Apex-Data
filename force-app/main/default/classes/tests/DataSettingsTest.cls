@@ -136,7 +136,7 @@ private inherited sharing class DataSettingsTest {
     }
     System.Test.stopTest();
     Assert.areEqual(
-      true,
+      false,
       mockedSettings.isFlsEnabled,
       'Should return false when bypass is not set for user and fls is disabled'
     );
