@@ -17,3 +17,5 @@ force-app/main/default/flexipages
 
 # LWC Jest
 **/__tests__/**
+
+force-app/main/default/profiles
