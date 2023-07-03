@@ -19,3 +19,4 @@ force-app/main/default/flexipages
 **/__tests__/**
 
 force-app/main/default/profiles
+force-app/main/default/customindex
