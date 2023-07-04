@@ -29,3 +29,16 @@ Base interface for datqabase connections. Primarily used to decouple libraries
 from standard DML and to support mocking
 
 
+
+### [MockDatabaseConnection](./ApexData/MockDatabaseConnection.md)
+
+Mock database implementation for providing basic db functionality without requiring a coupling
+to the Salesforce DB (which then imposes that any operation that involves dml must be unit tested)
+
+
+
+### [SObjectMocker](./ApexData/SObjectMocker.md)
+
+Class used for mocking sObjects to generate fake ids, data, etc.
+
+
