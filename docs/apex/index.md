@@ -42,3 +42,9 @@ to the Salesforce DB (which then imposes that any operation that involves dml mu
 Class used for mocking sObjects to generate fake ids, data, etc.
 
 
+
+### [SmartDataFactory](./ApexData/SmartDataFactory.md)
+
+Flexible data factory for generating data for a given SObject Type
+
+
