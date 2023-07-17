@@ -29,27 +29,31 @@ private inherited sharing class SObjectInspectorTest {
       Account.Industry
     );
     System.Test.stopTest();
-    System.debug(values);
     Assert.isTrue(
       values.size() > 0,
       'Should return some picklist values for industry'
     );
   }
   @IsTest
-  private static void getRecordTypeDeveloperName_mockedRecordTypeId_returnNull() {
+  private static void getRecordTypeDeveloperName_mockedRecordTypeId_returnMaster() {
     SObjectMocker mocker = new SObjectMocker(RecordType.getSObjectType());
     SObjectInspector insp = new SObjectInspector(Account.getSObjectType());
     System.Test.startTest();
     String devName = insp.getRecordTypeDeveloperName(mocker.generateMockId());
     System.Test.stopTest();
-    Assert.isNull(devName, 'Dev name should not exist for mocked id');
+    Assert.areEqual('Master', devName, 'Master record type should be returned');
   }
   @IsTest
   private static void getRecordTypeId_noRecordTypeEnabled_returnNull() {
+    SObjectMocker mocker = new SObjectMocker(RecordType.getSObjectType());
     SObjectInspector insp = new SObjectInspector(Account.getSObjectType());
     System.Test.startTest();
-    Id rtId = insp.getRecordTypeDeveloperName('Master');
+    Id rtId = insp.getRecordTypeId('Master');
     System.Test.stopTest();
-    Assert.isNull(rtId, 'Should return no id for sobject with no record type');
+    Assert.areEqual(
+      mocker.generateMockId(),
+      rtId,
+      'Should return id for default master record type'
+    );
   }
 }
