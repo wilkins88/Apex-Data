@@ -37,6 +37,11 @@ to the Salesforce DB (which then imposes that any operation that involves dml mu
 
 
 
+### [SObjectInspector](./ApexData/SObjectInspector.md)
+
+
+
+
 ### [SObjectMocker](./ApexData/SObjectMocker.md)
 
 Class used for mocking sObjects to generate fake ids, data, etc.

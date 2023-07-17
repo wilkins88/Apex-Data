@@ -81,9 +81,7 @@ public inherited sharing class SmartDataFactory {
   private SObject getBaseSObject(Schema.SObjectType sObjType) {
     SObject record = sObjType.newSObject();
     for (
-      Schema.SObjectField field : sObjType.getDescribe()
-        .fields.getMap()
-        .values()
+      Schema.SObjectField field : new SObjectInspector(sObjType).getAllFields()
     ) {
       Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
       if (fieldDescribe.isNillable() || !fieldDescribe.isCreateable()) {
