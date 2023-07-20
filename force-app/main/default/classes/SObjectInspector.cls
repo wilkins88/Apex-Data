@@ -88,4 +88,11 @@ public inherited sharing class SObjectInspector {
       ?.get(recordTypeId)
       ?.getDeveloperName();
   }
+  /**
+   * @description Returns whether or not the current user can delete the injected sobject type
+   * @return True if can delete, false otherwise
+   */
+  public Boolean canDelete() {
+    return this.describeResult.deletable();
+  }
 }

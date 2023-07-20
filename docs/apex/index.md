@@ -23,6 +23,13 @@ Standard database connection that wraps the system Database API for various dml 
 
 
 
+### [Dml](./ApexData/Dml.md)
+
+Dml service class for implementing flexible, secure-by-default conn write operations
+Should be used in place of standard DML and/or Database operations
+
+
+
 ### [IDatabaseConnection](./ApexData/IDatabaseConnection.md)
 
 Base interface for datqabase connections. Primarily used to decouple libraries
