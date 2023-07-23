@@ -9,7 +9,7 @@ public inherited sharing class DataExceptions {
   }
   public inherited sharing class FlsException extends Exception {
     @TestVisible
-    private static final String INUSFFICIENT_ACCESS_MESSAGE = 'Insufficient {0} access to: {1}';
+    private final String INUSFFICIENT_ACCESS_MESSAGE = 'Insufficient {0} access to: {1}';
     @TestVisible
     private DataStringAdapter stringAdapter {
       get {

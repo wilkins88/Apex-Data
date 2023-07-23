@@ -43,7 +43,6 @@ public inherited sharing virtual class DataSettings {
     }
     return instance;
   }
-
   /**
    * @description Returns whether or not FLS is currently enforced for data transactions
    * Note that this will always return false for any users with the Bypass FLS custom permission
@@ -55,21 +54,25 @@ public inherited sharing virtual class DataSettings {
     }
     return this.isFlsEnabled;
   }
-
   /**
    * @description Enables FLS for subsequent data actions
    */
   public void enableFls() {
     this.isFlsEnabled = true;
   }
-
   /**
    * @description Disables FLS for subsequent data actions
    */
   public void disableFls() {
     this.isFlsEnabled = false;
   }
-
+  /**
+   * @descritpion Returns whether or not a mock database connection should be used in data operations
+   * @return True if a mock database should be used, false otherwise
+   */
+  public Boolean shouldUseMockDatabase() {
+    return this.isMockDatabaseEnabled;
+  }
   /**
    * @description Enables the mock database for tests
    */
@@ -81,14 +84,12 @@ public inherited sharing virtual class DataSettings {
     }
     this.isMockDatabaseEnabled = true;
   }
-
   /**
    * @description Disables the mock database for tests
    */
   public void disableMockDatabase() {
     this.isMockDatabaseEnabled = false;
   }
-
   /**
    * @description Protected constructor for affording mocking if needed without exposing to client code
    */

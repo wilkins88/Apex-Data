@@ -4,6 +4,12 @@ layout: default
 # Classes
 ## ApexData
 
+### [Data](./ApexData/Data.md)
+
+Static accessor class for providing a static facade over stateless instance classes (to support mocking/testing)
+
+
+
 ### [DataExceptions](./ApexData/DataExceptions.md)
 
 Exception container class for organizing exceptions specific to this data library
@@ -17,9 +23,21 @@ through the application
 
 
 
+### [DataStringAdapter](./ApexData/DataStringAdapter.md)
+
+Adapter for processing various strings/enums to provide consistency throughout the app
+
+
+
 ### [DatabaseConnection](./ApexData/DatabaseConnection.md)
 
 Standard database connection that wraps the system Database API for various dml operations.
+
+
+
+### [DatabaseOperation](./ApexData/DatabaseOperation.md)
+
+Enum for capturing database operations
 
 
 

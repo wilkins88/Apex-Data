@@ -130,4 +130,14 @@ Returns whether or not the current user can delete the injected sobject type
 |---|---|
 |Boolean|True if can delete, false otherwise|
 
+### `public getSObjectType()`
+
+Returns the type of SObject being inspected
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|Schema|SObject type being inspected|
+
 ---

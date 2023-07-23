@@ -93,6 +93,13 @@ public inherited sharing class SObjectInspector {
    * @return True if can delete, false otherwise
    */
   public Boolean canDelete() {
-    return this.describeResult.deletable();
+    return this.describeResult.isDeletable();
+  }
+  /**
+   * @description Returns the type of SObject being inspected
+   * @return SObject type being inspected
+   */
+  public Schema.SObjectType getSObjectType() {
+    return this.sObjType;
   }
 }

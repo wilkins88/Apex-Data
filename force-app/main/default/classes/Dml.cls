@@ -7,16 +7,10 @@
  */
 public inherited sharing class Dml {
   @TestVisible
-  private static IDatabaseConnection conn {
-    get {
-      if (DataSettings.getInstance().enableMockDatabase()) {
-        conn = new MockDatabaseConnection();
-      } else {
-        conn = new DatabaseConnection();
-      }
-      return conn;
-    }
-    set;
+  private IDatabaseConnection conn;
+
+  public Dml(IDatabaseConnection conn) {
+    this.conn = conn;
   }
   /**
    * @description Inserts a single record
@@ -24,8 +18,8 @@ public inherited sharing class Dml {
    * @return Database.SaveResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.SaveResult insertRecord(SObject record) {
-    return insertRecords(new List<SObject>{ record })[0];
+  public Database.SaveResult insertRecord(SObject record) {
+    return this.insertRecords(new List<SObject>{ record })[0];
   }
   /**
    * @description Inserts a single record with DML options
@@ -34,11 +28,11 @@ public inherited sharing class Dml {
    * @return Database.SaveResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.SaveResult insertRecord(
+  public Database.SaveResult insertRecord(
     SObject record,
     Database.DMLOptions options
   ) {
-    return insertRecords(new List<SObject>{ record }, options)[0];
+    return this.insertRecords(new List<SObject>{ record }, options)[0];
   }
   /**
    * @description Inserts a collection of records
@@ -46,8 +40,8 @@ public inherited sharing class Dml {
    * @return List<Database.SaveResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.SaveResult> insertRecords(List<SObject> records) {
-    return insertRecords(records, null);
+  public List<Database.SaveResult> insertRecords(List<SObject> records) {
+    return this.insertRecords(records, null);
   }
   /**
    * @description Inserts a collection of records with DML options
@@ -56,12 +50,12 @@ public inherited sharing class Dml {
    * @return List<Database.SaveResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.SaveResult> insertRecords(
+  public List<Database.SaveResult> insertRecords(
     List<SObject> records,
     Database.DMLOptions options
   ) {
-    List<Database.SaveResult> results = conn.insertRecords(
-      enforceFLS(records, System.AccessType.CREATABLE),
+    List<Database.SaveResult> results = this.conn.insertRecords(
+      this.enforceFLS(records, System.AccessType.CREATABLE),
       options
     );
     return results;
@@ -72,8 +66,8 @@ public inherited sharing class Dml {
    * @return Database.SaveResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.SaveResult updateRecord(SObject record) {
-    return updateRecords(new List<SObject>{ record })[0];
+  public Database.SaveResult updateRecord(SObject record) {
+    return this.updateRecords(new List<SObject>{ record })[0];
   }
   /**
    * @description Updates a single record with DML options
@@ -82,11 +76,11 @@ public inherited sharing class Dml {
    * @return Database.SaveResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.SaveResult updateRecord(
+  public Database.SaveResult updateRecord(
     SObject record,
     Database.DMLOptions options
   ) {
-    return updateRecords(new List<SObject>{ record }, options)[0];
+    return this.updateRecords(new List<SObject>{ record }, options)[0];
   }
   /**
    * @description Updates a collection of records
@@ -94,8 +88,8 @@ public inherited sharing class Dml {
    * @return List<Database.SaveResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.SaveResult> updateRecords(List<SObject> records) {
-    return updateRecords(records, null);
+  public List<Database.SaveResult> updateRecords(List<SObject> records) {
+    return this.updateRecords(records, null);
   }
   /**
    * @description Updates a collection of records with DML options
@@ -104,12 +98,12 @@ public inherited sharing class Dml {
    * @return List<Database.SaveResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.SaveResult> updateRecords(
+  public List<Database.SaveResult> updateRecords(
     List<SObject> records,
     Database.DMLOptions options
   ) {
-    List<Database.SaveResult> results = conn.updateRecords(
-      enforceFLS(records, System.AccessType.UPDATABLE),
+    List<Database.SaveResult> results = this.conn.updateRecords(
+      this.enforceFLS(records, System.AccessType.UPDATABLE),
       options
     );
     return results;
@@ -120,8 +114,21 @@ public inherited sharing class Dml {
    * @return Database.UpsertResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.UpsertResult upsertRecord(SObject record) {
-    return upsertRecords(new List<SObject>{ record })[0];
+  public Database.UpsertResult upsertRecord(SObject record) {
+    return this.upsertRecords(new List<SObject>{ record })[0];
+  }
+  /**
+   * @description Upserts a single record on an external Id field
+   * @param record Record to upsert
+   * @param externalIdField Field to upsert on
+   * @return Database.UpsertResult from the dml operation
+   * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
+   */
+  public Database.UpsertResult upsertRecord(
+    SObject record,
+    Schema.SObjectField externalIdField
+  ) {
+    return this.upsertRecords(new List<SObject>{ record }, externalIdField)[0];
   }
   /**
    * @description Upserts a collection of records
@@ -129,10 +136,21 @@ public inherited sharing class Dml {
    * @return List<Database.UpsertResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.UpsertResult> upsertRecords(
-    List<SObject> records
+  public List<Database.UpsertResult> upsertRecords(List<SObject> records) {
+    return this.upsertRecords(records, true);
+  }
+  /**
+   * @description Upserts a collection of records on an exteranal id
+   * @param record Records to upsert
+   * @param externalIdField Field to upsert on
+   * @return List<Database.UpsertResult> from the dml operation
+   * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
+   */
+  public List<Database.UpsertResult> upsertRecords(
+    List<SObject> records,
+    Schema.SObjectField externalIdField
   ) {
-    return upsertRecords(records, true);
+    return this.upsertRecords(records, externalIdField, true);
   }
   /**
    * @description Upserts a collection of records
@@ -141,12 +159,31 @@ public inherited sharing class Dml {
    * @return List<Database.UpsertResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.UpsertResult> upsertRecords(
+  public List<Database.UpsertResult> upsertRecords(
     List<SObject> records,
     Boolean allOrNone
   ) {
-    List<Database.UpsertResult> results = conn.upsertRecords(
-      enforceFLS(records, System.AccessType.UPSERTABLE),
+    List<Database.UpsertResult> results = this.conn.upsertRecords(
+      this.enforceFLS(records, System.AccessType.UPSERTABLE),
+      allOrNone
+    );
+    return results;
+  }
+  /**
+   * @description Upserts a collection of records on an exteranal id
+   * @param record Records to upsert
+   * @param allOrNone Whether partial conn writes should be allowed
+   * @return List<Database.UpsertResult> from the dml operation
+   * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
+   */
+  public List<Database.UpsertResult> upsertRecords(
+    List<SObject> records,
+    Schema.SObjectField externalIdField,
+    Boolean allOrNone
+  ) {
+    List<Database.UpsertResult> results = this.conn.upsertRecords(
+      this.enforceFLS(records, System.AccessType.UPSERTABLE),
+      externalIdField,
       allOrNone
     );
     return results;
@@ -157,8 +194,8 @@ public inherited sharing class Dml {
    * @return Database.DeleteResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.DeleteResult deleteRecord(SObject record) {
-    return deleteRecords(new List<SObject>{ record })[0];
+  public Database.DeleteResult deleteRecord(SObject record) {
+    return this.deleteRecords(new List<SObject>{ record })[0];
   }
   /**
    * @description Deletes a single record
@@ -166,8 +203,8 @@ public inherited sharing class Dml {
    * @return Database.DeleteResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.DeleteResult deleteRecord(Id recordId) {
-    return deleteRecords(new List<Id>{ recordId })[0];
+  public Database.DeleteResult deleteRecord(Id recordId) {
+    return this.deleteRecords(new List<Id>{ recordId })[0];
   }
   /**
    * @description Deletes a collection of records
@@ -175,10 +212,8 @@ public inherited sharing class Dml {
    * @return List<Database.DeleteResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.DeleteResult> deleteRecords(
-    List<SObject> records
-  ) {
-    return deleteRecords(records, true);
+  public List<Database.DeleteResult> deleteRecords(List<SObject> records) {
+    return this.deleteRecords(records, true);
   }
   /**
    * @description Deletes a collection of records
@@ -187,7 +222,7 @@ public inherited sharing class Dml {
    * @return List<Database.DeleteResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.DeleteResult> deleteRecords(
+  public List<Database.DeleteResult> deleteRecords(
     List<SObject> records,
     Boolean allOrNone
   ) {
@@ -195,7 +230,7 @@ public inherited sharing class Dml {
     for (SObject record : records) {
       recordIds.add(record.Id);
     }
-    return deleteRecords(recordIds, allOrNone);
+    return this.deleteRecords(recordIds, allOrNone);
   }
   /**
    * @description Deletes a collection of records
@@ -203,8 +238,8 @@ public inherited sharing class Dml {
    * @return List<Database.DeleteResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.DeleteResult> deleteRecords(List<Id> recordIds) {
-    return deleteRecords(recordIds, true);
+  public List<Database.DeleteResult> deleteRecords(List<Id> recordIds) {
+    return this.deleteRecords(recordIds, true);
   }
   /**
    * @description Deletes a collection of records
@@ -213,12 +248,12 @@ public inherited sharing class Dml {
    * @return List<Database.DeleteResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.DeleteResult> deleteRecords(
+  public List<Database.DeleteResult> deleteRecords(
     List<Id> recordIds,
     Boolean allOrNone
   ) {
-    List<Database.DeleteResult> results = conn.deleteRecords(
-      enforceFLS(recordIds, DatabaseOperation.DML_DELETE),
+    List<Database.DeleteResult> results = this.conn.deleteRecords(
+      this.enforceFLS(recordIds, DatabaseOperation.DML_DELETE),
       allOrNone
     );
     return results;
@@ -229,7 +264,7 @@ public inherited sharing class Dml {
    * @return Database.UndeleteResult from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static Database.UndeleteResult undeleteRecord(Id recordId) {
+  public Database.UndeleteResult undeleteRecord(Id recordId) {
     return undeleteRecords(new List<Id>{ recordId })[0];
   }
   /**
@@ -238,10 +273,8 @@ public inherited sharing class Dml {
    * @return List<Database.UndeleteResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.UndeleteResult> undeleteRecords(
-    List<Id> recordIds
-  ) {
-    return undeleteRecords(recordIds, true);
+  public List<Database.UndeleteResult> undeleteRecords(List<Id> recordIds) {
+    return this.undeleteRecords(recordIds, true);
   }
   /**
    * @description Undeletes a collection of records
@@ -250,12 +283,12 @@ public inherited sharing class Dml {
    * @return List<Database.UndeleteResult> from the dml operation
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
-  public static List<Database.UndeleteResult> undeleteRecords(
+  public List<Database.UndeleteResult> undeleteRecords(
     List<Id> recordIds,
     Boolean allOrNone
   ) {
-    List<Database.UndeleteResult> results = conn.undeleteRecords(
-      enforceFLS(recordIds, DatabaseOperation.DML_UNDELETE),
+    List<Database.UndeleteResult> results = this.conn.undeleteRecords(
+      this.enforceFLS(recordIds, DatabaseOperation.DML_UNDELETE),
       allOrNone
     );
     return results;
@@ -270,7 +303,7 @@ public inherited sharing class Dml {
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
   @TestVisible
-  private static List<SObject> enforceFLS(
+  private List<SObject> enforceFLS(
     List<SObject> records,
     System.AccessType accessCheckType
   ) {
@@ -306,11 +339,8 @@ public inherited sharing class Dml {
    * @throws DataExceptions.FlsException {@link DataExceptions.FlsException}
    */
   @TestVisible
-  private static List<Id> enforceFLS(
-    List<Id> recordIds,
-    DatabaseOperation operation
-  ) {
-    if (!SecuritySettings.getInstance().isFlsEnforced()) {
+  private List<Id> enforceFLS(List<Id> recordIds, DatabaseOperation operation) {
+    if (!DataSettings.getInstance().isFlsEnforced()) {
       return recordIds;
     }
     Set<String> objectsWithoutAccess = new Set<String>();
@@ -324,7 +354,7 @@ public inherited sharing class Dml {
       }
     }
     if (!objectsWithoutAccess.isEmpty()) {
-      throw new DataExceptons.FlsException(
+      throw new DataExceptions.FlsException(
         operation,
         new List<String>(objectsWithoutAccess)
       );

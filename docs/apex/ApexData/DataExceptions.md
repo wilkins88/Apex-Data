@@ -38,7 +38,7 @@ Constructor
 
 |Param|Description|
 |---|---|
-|`operation`|[DatabaseOperation](DatabaseOperation) that was used to determine FLS violation|
+|`operation`|[DatabaseOperation](./DatabaseOperation.md) that was used to determine FLS violation|
 |`violations`|Fields of Objects that failed the FLS check|
 
 ---

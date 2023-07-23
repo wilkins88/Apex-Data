@@ -41,6 +41,16 @@ Enables FLS for subsequent data actions
 
 Disables FLS for subsequent data actions
 
+### `public shouldUseMockDatabase()`
+#### Returns
+
+|Type|Description|
+|---|---|
+|Boolean|True if a mock database should be used, false otherwise|
+
+
+**Descritpion** Returns whether or not a mock database connection should be used in data operations
+
 ### `public enableMockDatabase()`
 
 Enables the mock database for tests

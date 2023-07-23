@@ -12,8 +12,11 @@ Should be used in place of standard DML and/or Database operations
 
 **Author** Tom Wilkins
 
+## Constructors
+### `public Dml(IDatabaseConnection conn)`
+---
 ## Methods
-### `public static insertRecord(SObject record)`
+### `public insertRecord(SObject record)`
 
 Inserts a single record
 
@@ -35,7 +38,7 @@ Inserts a single record
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static insertRecord(SObject record, Database options)`
+### `public insertRecord(SObject record, Database options)`
 
 Inserts a single record with DML options
 
@@ -58,7 +61,7 @@ Inserts a single record with DML options
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static insertRecords(List<SObject> records)`
+### `public insertRecords(List<SObject> records)`
 
 Inserts a collection of records
 
@@ -80,7 +83,7 @@ Inserts a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static insertRecords(List<SObject> records, Database options)`
+### `public insertRecords(List<SObject> records, Database options)`
 
 Inserts a collection of records with DML options
 
@@ -103,7 +106,7 @@ Inserts a collection of records with DML options
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static updateRecord(SObject record)`
+### `public updateRecord(SObject record)`
 
 Updates a single record
 
@@ -125,7 +128,7 @@ Updates a single record
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static updateRecord(SObject record, Database options)`
+### `public updateRecord(SObject record, Database options)`
 
 Updates a single record with DML options
 
@@ -148,7 +151,7 @@ Updates a single record with DML options
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static updateRecords(List<SObject> records)`
+### `public updateRecords(List<SObject> records)`
 
 Updates a collection of records
 
@@ -170,7 +173,7 @@ Updates a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static updateRecords(List<SObject> records, Database options)`
+### `public updateRecords(List<SObject> records, Database options)`
 
 Updates a collection of records with DML options
 
@@ -193,7 +196,7 @@ Updates a collection of records with DML options
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static upsertRecord(SObject record)`
+### `public upsertRecord(SObject record)`
 
 Upserts a single record
 
@@ -215,7 +218,30 @@ Upserts a single record
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static upsertRecords(List<SObject> records)`
+### `public upsertRecord(SObject record, Schema externalIdField)`
+
+Upserts a single record on an external Id field
+
+#### Parameters
+
+|Param|Description|
+|---|---|
+|`record`|Record to upsert|
+|`externalIdField`|Field to upsert on|
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|Database|Database.UpsertResult from the dml operation|
+
+#### Throws
+
+|Exception|Description|
+|---|---|
+|`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
+
+### `public upsertRecords(List<SObject> records)`
 
 Upserts a collection of records
 
@@ -237,7 +263,30 @@ Upserts a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static upsertRecords(List<SObject> records, Boolean allOrNone)`
+### `public upsertRecords(List<SObject> records, Schema externalIdField)`
+
+Upserts a collection of records on an exteranal id
+
+#### Parameters
+
+|Param|Description|
+|---|---|
+|`record`|Records to upsert|
+|`externalIdField`|Field to upsert on|
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|List<Database.UpsertResult>|List<Database.UpsertResult> from the dml operation|
+
+#### Throws
+
+|Exception|Description|
+|---|---|
+|`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
+
+### `public upsertRecords(List<SObject> records, Boolean allOrNone)`
 
 Upserts a collection of records
 
@@ -260,7 +309,30 @@ Upserts a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static deleteRecord(SObject record)`
+### `public upsertRecords(List<SObject> records, Schema externalIdField, Boolean allOrNone)`
+
+Upserts a collection of records on an exteranal id
+
+#### Parameters
+
+|Param|Description|
+|---|---|
+|`record`|Records to upsert|
+|`allOrNone`|Whether partial conn writes should be allowed|
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|List<Database.UpsertResult>|List<Database.UpsertResult> from the dml operation|
+
+#### Throws
+
+|Exception|Description|
+|---|---|
+|`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
+
+### `public deleteRecord(SObject record)`
 
 Deletes a single record
 
@@ -282,7 +354,7 @@ Deletes a single record
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static deleteRecord(Id recordId)`
+### `public deleteRecord(Id recordId)`
 
 Deletes a single record
 
@@ -304,7 +376,7 @@ Deletes a single record
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static deleteRecords(List<SObject> records)`
+### `public deleteRecords(List<SObject> records)`
 
 Deletes a collection of records
 
@@ -326,7 +398,7 @@ Deletes a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static deleteRecords(List<SObject> records, Boolean allOrNone)`
+### `public deleteRecords(List<SObject> records, Boolean allOrNone)`
 
 Deletes a collection of records
 
@@ -349,7 +421,7 @@ Deletes a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static deleteRecords(List<Id> recordIds)`
+### `public deleteRecords(List<Id> recordIds)`
 
 Deletes a collection of records
 
@@ -371,7 +443,7 @@ Deletes a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static deleteRecords(List<Id> recordIds, Boolean allOrNone)`
+### `public deleteRecords(List<Id> recordIds, Boolean allOrNone)`
 
 Deletes a collection of records
 
@@ -394,7 +466,7 @@ Deletes a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static undeleteRecord(Id recordId)`
+### `public undeleteRecord(Id recordId)`
 
 Undeletes a single record
 
@@ -416,7 +488,7 @@ Undeletes a single record
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static undeleteRecords(List<Id> recordIds)`
+### `public undeleteRecords(List<Id> recordIds)`
 
 Undeletes a collection of records
 
@@ -438,7 +510,7 @@ Undeletes a collection of records
 |---|---|
 |`DataExceptions`|.FlsException [DataExceptions.FlsException](DataExceptions.FlsException)|
 
-### `public static undeleteRecords(List<Id> recordIds, Boolean allOrNone)`
+### `public undeleteRecords(List<Id> recordIds, Boolean allOrNone)`
 
 Undeletes a collection of records
 
