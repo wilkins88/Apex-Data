@@ -120,4 +120,24 @@ Returns the record type dev name for the provided record type id
 |---|---|
 |String|Record Id for the provided dev name, null if invalid record type id|
 
+### `public canDelete()`
+
+Returns whether or not the current user can delete the injected sobject type
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|Boolean|True if can delete, false otherwise|
+
+### `public getSObjectType()`
+
+Returns the type of SObject being inspected
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|Schema|SObject type being inspected|
+
 ---
