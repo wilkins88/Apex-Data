@@ -17,6 +17,10 @@ Static accessor class for providing a static facade over stateless instance clas
 
 `TESTVISIBLE` 
 
+### `public selectors` → `SelectorFactory`
+
+`TESTVISIBLE` 
+
 ### `public settings` → `DataSettings`
 
 `TESTVISIBLE` 
