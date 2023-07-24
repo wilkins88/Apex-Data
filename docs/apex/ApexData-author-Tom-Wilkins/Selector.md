@@ -91,6 +91,38 @@ Clears the cross object queries -- useful if reusing the same selector
 |---|---|
 |Selector|Reference to the invoking object|
 
+### `public setLimit(Integer recordLimit)`
+
+Sets the limit for the query
+
+#### Parameters
+
+|Param|Description|
+|---|---|
+|`recordLimit`|LIMIT value to apply|
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|Selector|Reference to the invoking object|
+
+### `public setOffset(Integer recordOffset)`
+#### Parameters
+
+|Param|Description|
+|---|---|
+|`recordOffset`|OFFSET value to aplly|
+
+#### Returns
+
+|Type|Description|
+|---|---|
+|Selector|Reference to the invoking object|
+
+
+**SEts** the offset for the query
+
 ### `public getById(Set<Id> recordIds)`
 
 Queries records by Id
