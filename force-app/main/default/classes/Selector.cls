@@ -8,6 +8,10 @@
  */
 public inherited sharing abstract class Selector {
   @TestVisible
+  private Integer recordOffset;
+  @TestVisible
+  private Integer recordLimit;
+  @TestVisible
   protected List<Schema.SObjectField> fields {
     get {
       if (this.fields == null) {
@@ -102,6 +106,26 @@ public inherited sharing abstract class Selector {
    */
   public Selector clearCrossObjectQueries() {
     this.crossObjectQueries.clear();
+    return this;
+  }
+
+  /**
+   * @description Sets the limit for the query
+   * @param recordLimit LIMIT value to apply
+   * @return Reference to the invoking object
+   */
+  public Selector setLimit(Integer recordLimit) {
+    this.recordLimit = recordLimit;
+    return this;
+  }
+
+  /**
+   * @description @SEts the offset for the query
+   * @param recordOffset OFFSET value to aplly
+   * @return Reference to the invoking object
+   */
+  public Selector setOffset(Integer recordOffset) {
+    this.recordOffset = recordOffset;
     return this;
   }
 
@@ -210,35 +234,7 @@ public inherited sharing abstract class Selector {
    */
   @TestVisible
   protected String buildQueryString(string filter) {
-    return buildQueryString(filter, '', null);
-  }
-
-  /**
-   * @description Helper for building a query string based on a filter and an ordering
-   * Note that this may be changed in the future if we decided to move Ordering/Limit/Offset/etc.
-   * to be settable by invoking client code
-   * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
-   * long as the query is executed in the scope where the binding exists (see getById as an example)
-   * @param orderBy ORDER BY clause value without the ORDER BY e.g. MyCustomField__c ASC, MyOtherCustomField__c ASC
-   * @return Valid string that can be used as a query
-   */
-  @TestVisible
-  protected String buildQueryString(String filter, String orderBy) {
-    return buildQueryString(filter, orderBy, null);
-  }
-
-  /**
-   * @description Helper for building a query string based on a filter and limit
-   * Note that this may be changed in the future if we decided to move Ordering/Limit/Offset/etc.
-   * to be settable by invoking client code
-   * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
-   * long as the query is executed in the scope where the binding exists (see getById as an example)
-   * @param limitNumber Integer number of records to limit to
-   * @return Valid string that can be used as a query
-   */
-  @TestVisible
-  protected String buildQueryString(String filter, Integer limitNumber) {
-    return buildQueryString(filter, '', limitNumber);
+    return buildQueryString(filter, '');
   }
 
   /**
@@ -248,15 +244,10 @@ public inherited sharing abstract class Selector {
    * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
    * long as the query is executed in the scope where the binding exists (see getById as an example)
    * @param orderBy ORDER BY clause value without the ORDER BY e.g. MyCustomField__c ASC, MyOtherCustomField__c ASC
-   * @param limitNumber Integer number of records to limit to
    * @return Valid string that can be used as a query
    */
   @TestVisible
-  protected String buildQueryString(
-    String filter,
-    String orderBy,
-    Integer limitNumber
-  ) {
+  protected String buildQueryString(String filter, String orderBy) {
     String queryString = 'SELECT ';
     List<String> fields = this.fields.isEmpty()
       ? new List<String>{ 'Id' }
@@ -291,8 +282,11 @@ public inherited sharing abstract class Selector {
     if (String.isNotBlank(orderBy)) {
       queryString += ' ORDER BY ' + orderBy;
     }
-    if (limitNumber != null) {
-      queryString += ' LIMIT ' + String.valueOf(limitNumber);
+    if (this.recordLimit != null) {
+      queryString += ' LIMIT ' + String.valueOf(recordLimit);
+    }
+    if (this.recordOffset != null) {
+      queryString += ' OFFSET ' + String.valueOf(this.recordOffset);
     }
     return queryString;
   }
