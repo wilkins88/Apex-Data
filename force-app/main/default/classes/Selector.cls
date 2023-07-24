@@ -1,0 +1,321 @@
+/**
+ * @description Base selector for query classes to implement which effectively combines
+ * two aspects of data frameworks for cohesiveness and simplicity: the selector and the query builder.
+ * Respects security settings established in {@link DataSettings}.
+ *
+ * @group ApexData
+ * author Tom Wilkins
+ */
+public inherited sharing abstract class Selector {
+  @TestVisible
+  protected List<Schema.SObjectField> fields {
+    get {
+      if (this.fields == null) {
+        this.fields = new List<Schema.SObjectField>();
+      }
+      return this.fields;
+    }
+    set;
+  }
+  @TestVisible
+  protected Map<String, List<Schema.SObjectField>> crossObjectQueries {
+    get {
+      if (this.crossObjectQueries == null) {
+        this.crossObjectQueries = new Map<String, List<Schema.SObjectField>>();
+      }
+      return this.crossObjectQueries;
+    }
+    set;
+  }
+  @TestVisible
+  protected Map<String, List<Schema.SObjectField>> relatedListQueries {
+    get {
+      if (this.relatedListQueries == null) {
+        this.relatedListQueries = new Map<String, List<Schema.SObjectField>>();
+      }
+      return this.relatedListQueries;
+    }
+    set;
+  }
+
+  /**
+   * @description Should return the type of SObject that the selector is for
+   * @return Schema.SObjectTyp such as Account.getSObjectType() or Case.getSObjectType()
+   */
+  public abstract Schema.SObjectType getSObjectType();
+
+  /**
+   * @description Sets the fields to be queried -- must be set prior to invoking inherited
+   * selector methods or invoking the buildQueryString helper.
+   * @param fields Fields on the object (provided by getSObjectType override) to query for
+   * @return Reference to the invoking object
+   */
+  public Selector setFields(List<Schema.SObjectField> fields) {
+    this.fields = fields;
+    return this;
+  }
+
+  /**
+   * @description Sets a related list to be queried -- must be set prior to invoking inherited
+   * selector methods or invoking the buildQueryString helper. Multiple related lists
+   * (assuming different relation names) can be set in a single query
+   * @param relationName String representation of a relation e.g. MyRelatedObjects__r
+   * @param fields Fields on the related object to query
+   * @return Reference to the invoking object
+   */
+  public Selector addRelatedListQuery(
+    String relationName,
+    List<Schema.SObjectField> fields
+  ) {
+    this.relatedListQueries.put(relationName, fields);
+    return this;
+  }
+
+  /**
+   * @description Sets a parent object to be queried -- must be set prior to invoking inherited
+   * selector methods or invoking the buildQueryString helper. Multiple parent objects
+   * (assuming different relation names) can be set in a single query
+   * @param relationName String representation of a relation e.g. MyParentObject__r
+   * @param fields Fields on the related object to query
+   * @return Reference to the invoking object
+   */
+  public Selector addCrossObjectQuery(
+    String relationName,
+    List<Schema.SObjectField> fields
+  ) {
+    this.crossObjectQueries.put(relationName, fields);
+    return this;
+  }
+
+  /**
+   * @description Clears the related list queries -- useful if reusing the same selector
+   * @return Reference to the invoking object
+   */
+  public Selector clearRelatedListQueries() {
+    this.relatedListQueries.clear();
+    return this;
+  }
+
+  /**
+   * @description Clears the cross object queries -- useful if reusing the same selector
+   * @return Reference to the invoking object
+   */
+  public Selector clearCrossObjectQueries() {
+    this.crossObjectQueries.clear();
+    return this;
+  }
+
+  /**
+   * @description Queries records by Id
+   * @param recordIds Set of record ids to filter on
+   * @return Records resulting from the query
+   */
+  public List<SObject> getById(Set<Id> recordIds) {
+    return Database.query(this.buildQueryString('Id IN :recordIds'));
+  }
+
+  /**
+   * @description Queries records by record type id
+   * @param recordTypeIds Set of record type ids to filter on
+   * @return Records resulting from the query
+   */
+  public List<SObject> getByRecordType(Set<Id> recordTypeIds) {
+    return Database.query(
+      this.buildQueryString('RecordTypeId IN :recordTypeIds')
+    );
+  }
+
+  /**
+   * @description Queries records by record type developer name
+   * @param recordTypeDeveloperNames Set of record type developer names to filter on
+   * @return Records resulting from the query
+   */
+  public List<SObject> getByRecordType(Set<String> recordTypeDeveloperNames) {
+    return Database.query(
+      this.buildQueryString(
+        'RecordType.DeveloperName IN :recordTypeDeveloperNames'
+      )
+    );
+  }
+
+  /**
+   * @description Queries record by record id and record type id
+   * @param recordIds Set of record ids to filter on
+   * @param recordTypeIds Set of record type ids to filter on
+   * @return Records resulting from the query
+   */
+  public List<SObject> getByIdAndRecordType(
+    Set<Id> recordIds,
+    Set<Id> recordTypeIds
+  ) {
+    return Database.query(
+      this.buildQueryString(
+        'Id IN :recordIds AND RecordTypeId IN :recordTypeIds'
+      )
+    );
+  }
+
+  /**
+   * @description Queries record by record id and record type id
+   * @param recordIds Set of record ids to filter on
+   * @param recordTypeIds Set of record type ids to filter on
+   * @return Records resulting from the query
+   */
+  public List<SObject> getByIdAndRecordType(
+    Set<Id> recordIds,
+    Set<String> recordTypeDeveloperNames
+  ) {
+    return Database.query(
+      this.buildQueryString(
+        'Id IN :recordIds AND RecordType.DeveloperName IN :recordTypeDeveloperNames'
+      )
+    );
+  }
+
+  /**
+   * @description Queries record by record type developer names
+   */
+  public List<SObject> getByDeveloperName(Set<String> developerNames) {
+    return Database.query(
+      this.buildQueryString('DeveloperName IN :developerNames')
+    );
+  }
+
+  /**
+   * @description Queries records by name
+   * @param names Set of name values to filter on
+   * @return Records resulting from the query
+   */
+  public List<SObject> getByName(Set<String> names) {
+    return Database.query(this.buildQueryString('Name IN :names'));
+  }
+
+  /**
+   * @description WARNING USE WITH CAUTION. SHOULD ONLY BE USED WITH TABLES THAT ARE GUARANTEED TO
+   * BE LOW VOLUME. Queries all data for a table. Virtual so that child selectors that are for custom
+   * metadata can override with custom metadata specific features, which is hard to do dynamically.
+   * @return all records for a table
+   */
+  public virtual List<SObject> getAll() {
+    return Database.query(this.buildQueryString(''));
+  }
+
+  /**
+   * @description Helper for building a query string based only on a filter
+   * Note that this may be changed in the future if we decided to move Ordering/Limit/Offset/etc.
+   * to be settable by invoking client code
+   * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
+   * long as the query is executed in the scope where the binding exists (see getById as an example)
+   * @return Valid string that can be used as a query
+   */
+  @TestVisible
+  protected String buildQueryString(string filter) {
+    return buildQueryString(filter, '', null);
+  }
+
+  /**
+   * @description Helper for building a query string based on a filter and an ordering
+   * Note that this may be changed in the future if we decided to move Ordering/Limit/Offset/etc.
+   * to be settable by invoking client code
+   * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
+   * long as the query is executed in the scope where the binding exists (see getById as an example)
+   * @param orderBy ORDER BY clause value without the ORDER BY e.g. MyCustomField__c ASC, MyOtherCustomField__c ASC
+   * @return Valid string that can be used as a query
+   */
+  @TestVisible
+  protected String buildQueryString(String filter, String orderBy) {
+    return buildQueryString(filter, orderBy, null);
+  }
+
+  /**
+   * @description Helper for building a query string based on a filter and limit
+   * Note that this may be changed in the future if we decided to move Ordering/Limit/Offset/etc.
+   * to be settable by invoking client code
+   * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
+   * long as the query is executed in the scope where the binding exists (see getById as an example)
+   * @param limitNumber Integer number of records to limit to
+   * @return Valid string that can be used as a query
+   */
+  @TestVisible
+  protected String buildQueryString(String filter, Integer limitNumber) {
+    return buildQueryString(filter, '', limitNumber);
+  }
+
+  /**
+   * @description Helper for building a query string based on a filter, ordering and limit
+   * Note that this may be changed in the future if we decided to move Ordering/Limit/Offset/etc.
+   * to be settable by invoking client code
+   * @param filter WHERE clause value without the WHERE e.g. Id IN :myIds. Supports variable binding so
+   * long as the query is executed in the scope where the binding exists (see getById as an example)
+   * @param orderBy ORDER BY clause value without the ORDER BY e.g. MyCustomField__c ASC, MyOtherCustomField__c ASC
+   * @param limitNumber Integer number of records to limit to
+   * @return Valid string that can be used as a query
+   */
+  @TestVisible
+  protected String buildQueryString(
+    String filter,
+    String orderBy,
+    Integer limitNumber
+  ) {
+    String queryString = 'SELECT ';
+    List<String> fields = this.fields.isEmpty()
+      ? new List<String>{ 'Id' }
+      : this.processFields('', this.fields);
+    for (String relation : this.crossObjectQueries.keySet()) {
+      fields.addAll(
+        this.processFields(relation, this.crossObjectQueries.get(relation))
+      );
+    }
+    for (String relation : this.relatedListQueries.keySet()) {
+      fields.add(
+        '(SELECT ' +
+          String.join(
+            this.processFields('', this.relatedListQueries.get(relation)),
+            ','
+          ) +
+          ' FROM ' +
+          relation +
+          ')'
+      );
+    }
+    queryString +=
+      String.join(fields, ',') +
+      ' FROM ' +
+      String.valueOf(this.getSObjectType());
+    if (String.isNotBlank(filter)) {
+      queryString += ' WHERE ' + filter;
+    }
+    if (DataSettings.getInstance().isFlsEnforced()) {
+      queryString += ' WITH SECURITY_ENFORCED';
+    }
+    if (String.isNotBlank(orderBy)) {
+      queryString += ' ORDER BY ' + orderBy;
+    }
+    if (limitNumber != null) {
+      queryString += ' LIMIT ' + String.valueOf(limitNumber);
+    }
+    return queryString;
+  }
+
+  /**
+   * @description Helper for processing fields and converting them to valid strings to be used in a query
+   * @param prefix Prefix to apply to the field, usually a relation name e.g. MyCustomRelation__r
+   * @param fields Fields to convert to strings
+   * @return List of converted strings to process
+   */
+  @TestVisible
+  protected List<String> processFields(
+    String prefix,
+    List<Schema.SObjectField> fields
+  ) {
+    List<String> fieldStrings = new List<String>();
+    for (Schema.SObjectField field : fields) {
+      fieldStrings.add(
+        String.isBlank(prefix)
+          ? String.valueOf(field)
+          : prefix + '.' + String.valueOf(field)
+      );
+    }
+    return fieldStrings;
+  }
+}

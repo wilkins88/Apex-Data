@@ -73,8 +73,24 @@ Class used for mocking sObjects to generate fake ids, data, etc.
 
 
 
+### [SelectorFactory](./ApexData/SelectorFactory.md)
+
+Factory class for producing selectors to allow decoupling of construction
+and utilization
+
+
+
 ### [SmartDataFactory](./ApexData/SmartDataFactory.md)
 
 Flexible data factory for generating data for a given SObject Type
+
+
+## ApexData author Tom Wilkins
+
+### [Selector](./ApexData-author-Tom-Wilkins/Selector.md)
+
+Base selector for query classes to implement which effectively combines
+two aspects of data frameworks for cohesiveness and simplicity: the selector and the query builder.
+Respects security settings established in [DataSettings](./ApexData/DataSettings.md).
 
 

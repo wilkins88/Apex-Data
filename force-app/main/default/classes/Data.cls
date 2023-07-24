@@ -28,4 +28,14 @@ public inherited sharing class Data {
     }
     private set;
   }
+  @TestVisible
+  public static SelectorFactory selectors {
+    get {
+      if (selectors == null) {
+        selectors = new SelectorFactory();
+      }
+      return selectors;
+    }
+    private set;
+  }
 }
